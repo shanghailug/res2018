@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=1024, user-scalable=no">
+
+  <title>Your deck.js Presentation</title>
+
+  <!-- Required stylesheet -->
+  <link rel="stylesheet" media="screen" href="core/deck.core.css">
+
+  <!-- Extension CSS files go here. Remove or add as needed. -->
+  <link rel="stylesheet" media="screen" href="extensions/goto/deck.goto.css">
+  <link rel="stylesheet" media="screen" href="extensions/menu/deck.menu.css">
+  <link rel="stylesheet" media="screen" href="extensions/navigation/deck.navigation.css">
+  <link rel="stylesheet" media="screen" href="extensions/status/deck.status.css">
+  <link rel="stylesheet" media="screen" href="extensions/scale/deck.scale.css">
+
+  <!-- Style theme. More available in /themes/style/ or create your own. -->
+  <link rel="stylesheet" media="screen" href="themes/style/web-2.0.css">
+
+  <!-- Transition theme. More available in /themes/transition/ or create your own. -->
+  <link rel="stylesheet" media="screen" href="themes/transition/horizontal-slide.css">
+
+  <!-- Basic black and white print styles -->
+  <link rel="stylesheet" media="print" href="core/print.css">
+
+  <!-- Required Modernizr file -->
+  <script src="modernizr.custom.js"></script>
+</head>
+<body>
+  <div class="deck-container">
+
+    <!-- Begin slides. Just make elements with a class of slide. -->
+
+    <section class="slide">
+        <div class="vcenter">
+          <h1>Testing with QuickCheck</h1>
+          <h2>Yu Changyuan</h2>
+          <h2>2018-04-21</h2>
+        </div>
+    </section>
+
+    <section class="slide">
+      <h2>Self Intro</h2>
+      <ul>
+        <li class="slide"><h3>Digial IC design engineer</h3></li>
+        <li class="slide"><h3>Interest in haskell</h3></li>
+        <li class="slide"><h3>SHLUG mantainer(one of)</h3></li>
+      </ul>
+    </section>
+
+    <section class="slide">
+      <h2>Very Simple Intro to Haskell</h2>
+      <ul>
+        <li class="slide"><h3>Function</h3></li>
+        <li class="slide"><h3>Typeclass</h3></li>
+      </ul>
+    </section>
+
+    
+    <section class="slide">
+      <h2>Function</h2>
+      <pre class="slide"><code>
+        add :: Int -> Int -> Int
+        add x y = x + y
+      </code></pre>
+
+      <pre class="slide"><code>
+        findMax :: Ord a => [a] -> a
+        findMax [a]      = a
+        findMax (x : xs) = if x > findMax xs then x else findMax xs
+      </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2>Typeclass</h2>
+      <pre class="slide"><code>
+        class Eq a where
+          (==) :: a -> a -> Bool
+          (/=) :: a -> a -> Bool
+      </code></pre>
+      <pre class="slide"><code>
+        class Eq a => Ord a where
+          compare :: a -> a -> Ordering
+          (<) :: a -> a -> Bool
+          (<=) :: a -> a -> Bool
+          (>) :: a -> a -> Bool
+          (>=) :: a -> a -> Bool
+          max :: a -> a -> a
+          min :: a -> a -> a
+      </code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>QuickCheck</h2>
+      <blockquote class="slide">
+        <p>QuickCheck: A Lightweight Tool for Random Testing of Haskell Programs</p>
+        <p><cite><a href="https://www.cs.tufts.edu/~nr/cs257/archive/john-hughes/quick.pdf">
+        Title of original QuickCheck paper</a></cite></p>
+      </blockquote>
+      
+      <blockquote class="slide">
+        <p>QuickCheck is the grandfather of property-based testing libraries.</p>
+        <p><cite><a href="https://begriffs.com/posts/2017-01-14-design-use-quickcheck.html">
+        The Design and Use of QuickCheck</a></cite></p>
+      </blockquote>
+
+      <blockquote class="slide">
+        <p><em>QuickCheck</em> is a combinator library originally written in Haskell, designed to assist in software testing by generating test cases for test suites.</p>
+        <p><cite><a href="https://en.wikipedia.org/wiki/QuickCheck">
+        Wikipedia page of QuickCheck</a></cite></p>
+      </blockquote>
+    </section>
+
+    <section class="slide">
+      <h2>quickCheck</h2>
+      <pre class="slide"><code>
+        quickCheck :: Testable prop => prop -> IO ()
+    		-- Defined in ‘Test.QuickCheck.Test’
+      </code></pre>
+      <pre class="slide"><code>
+class Testable prop where
+  property :: prop -> Property
+  {-# MINIMAL property #-}
+  	-- Defined in ‘Test.QuickCheck.Property’
+instance [safe] Testable Property
+  -- Defined in ‘Test.QuickCheck.Property’
+instance [safe] Testable prop => Testable (Gen prop)
+  -- Defined in ‘Test.QuickCheck.Property’
+instance [safe] Testable Discard
+  -- Defined in ‘Test.QuickCheck.Property’
+instance [safe] Testable Bool
+  -- Defined in ‘Test.QuickCheck.Property’
+instance [safe] (Arbitrary a, Show a, Testable prop) =>
+                Testable (a -> prop)
+  -- Defined in ‘Test.QuickCheck.Property’
+instance [safe] Testable ()
+  -- Defined in ‘Test.QuickCheck.Property’        
+      </code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>Trival example</h2>
+      <pre class="slide"><code>
+        quickCheck True
+      </code></pre>
+
+      <pre class="slide"><code>
+        quickCheck (\x -> x * x >= 0)
+      </code></pre>
+
+      <pre class="slide"><code>
+        quickCheck (\x -> x < 5)
+      </code></pre>
+
+      <pre class="slide"><code>
+        quickCheck (\x y -> x + y == y + x)
+      </code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>More complex example</h2>
+      <ul>
+        <li class="slide">
+          <h3>Solve equatiion</h3>
+          <p>x * x + b * x + c = 0</p>
+        </li>
+        <li class="slide">
+          <p>r = (-b ± sqrt (b * b - 4 * c)) / 2</p>
+        </li>
+      </ul>
+    </section>
+
+    <section class="slide">
+      <h2>findRoots</h2>
+      <pre class="slide"><code>
+        module T1 where
+
+        findRoots :: Floating a => a -> a -> (a, a)
+        findRoots b c =
+          let a = 1
+              δ = b * b - 4 * a * c
+          in ( (- b - sqrt δ) / 2, (-b + sqrt δ) / 2)
+      </code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>Test 1</h2>
+      <pre class="slide"><code>
+module T1a where
+
+import T1
+import Test.QuickCheck
+
+ε :: Double
+ε = 1.0e-10
+
+propAdd :: Double -> Double -> Bool
+propAdd b c =
+   let (r0, r1) = findRoots b c
+   in abs (r0 + r1 + b) < ε
+
+propMul :: Double -> Double -> Bool
+propMul b c =
+   let (r0, r1) = findRoots b c
+   in abs (r0 * r1 - c) < ε        
+      </code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>Test 1 fix</h2>
+      <pre class="slide"><code>
+import T1
+import T1a
+
+import Test.QuickCheck
+
+propAdd' :: Double -> Double -> Property
+propAdd' b c =
+   b * b >= 4 * c ==> propAdd b c
+
+propMul' :: Double -> Double -> Property
+propMul' b c =
+   b * b >= 4 * c ==> propMul b c        
+      </code></pre>
+    </section>
+    
+
+    <section class="slide">
+      <h2>Test 1 alternative</h2>
+      <pre class="slide"><code>
+module T1c where
+
+import T1
+import T1a(ε)
+
+import Test.QuickCheck
+import Data.Complex
+
+-- r0 + r1 = -b, r0 * r1 = c
+propAddC :: Complex Double -> Complex Double -> Bool
+propAddC b c =
+   let (r0, r1) = findRoots b c
+   in magnitude (r0 + r1 + b) < ε
+
+propMulC :: Complex Double -> Complex Double -> Bool
+propMulC b c =
+   let (r0, r1) = findRoots b c
+   in magnitude (r0 * r1 - c) < ε
+      </code></pre>
+    </section>
+
+    <section class="slide">
+      <h2>Test C HashMap implementation</h2>
+      <ul>
+        <li class="slide"><h3>FFI</h3></li>
+        <li class="slide"><h3>state</h3></li>
+      </ul>
+
+      <div class="slide">
+        <h3>Implementation</h3>
+      <ul>
+        <li class="slide"><code>intmap_test.c</code></li>
+        <li class="slide"><code>IntmapTest.hs</code></li>
+      </ul>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2>Reference</h2>
+      <ul>
+        <li>https://hackage.haskell.org/package/QuickCheck-2.11.3</li>
+        <li>https://github.com/nick8325/quickcheck</li>
+        <li>http://www.cse.chalmers.se/~rjmh/QuickCheck/manual.html</li>
+        <li>https://www.cs.tufts.edu/~nr/cs257/archive/john-hughes/quick.pdf</li>
+        <li>https://begriffs.com/posts/2017-01-14-design-use-quickcheck.html</li>
+        <li>https://en.wikipedia.org/wiki/QuickCheck</li>
+      </ul>
+    </section>
+      
+    
+    <!-- End slides. -->
+
+    <!-- Begin extension snippets. Add or remove as needed. -->
+
+    <!-- deck.navigation snippet -->
+    <div aria-role="navigation">
+      <a href="#" class="deck-prev-link" title="Previous">&#8592;</a>
+      <a href="#" class="deck-next-link" title="Next">&#8594;</a>
+    </div>
+
+    <!-- deck.status snippet -->
+    <p class="deck-status" aria-role="status">
+      <span class="deck-status-current"></span>
+      /
+      <span class="deck-status-total"></span>
+    </p>
+
+    <!-- deck.goto snippet -->
+    <form action="." method="get" class="goto-form">
+      <label for="goto-slide">Go to slide:</label>
+      <input type="text" name="slidenum" id="goto-slide" list="goto-datalist">
+      <datalist id="goto-datalist"></datalist>
+      <input type="submit" value="Go">
+    </form>
+
+    <!-- End extension snippets. -->
+  </div>
+
+<!-- Required JS files. -->
+<script src="jquery.min.js"></script>
+<script src="core/deck.core.js"></script>
+
+<!-- Extension JS files. Add or remove as needed. -->
+<script src="extensions/menu/deck.menu.js"></script>
+<script src="extensions/goto/deck.goto.js"></script>
+<script src="extensions/status/deck.status.js"></script>
+<script src="extensions/navigation/deck.navigation.js"></script>
+<script src="extensions/scale/deck.scale.js"></script>
+
+<!-- Initialize the deck. You can put this in an external file if desired. -->
+<script>
+  $(function() {
+    $.deck('.slide');
+  });
+</script>
+</body>
+</html>
